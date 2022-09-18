@@ -14,7 +14,7 @@
 
 (add-to-list 'default-frame-alist '(width  . 90))
 (add-to-list 'default-frame-alist '(height  . 30))
-(add-to-list 'default-frame-alist '(font . "Monospace-14"))
+(add-to-list 'default-frame-alist '(font . "Monospace-12"))
 
 (when (version<= "28.0.50" emacs-version )
   (global-display-line-numbers-mode))
@@ -107,7 +107,7 @@
  '(org-agenda-files
    '("~/Documents/notes_on_reading/seminar_4_discussion_05252022.org" "~/.emacs.d/agenda/tasks.org"))
  '(package-selected-packages
-   '(swiper json-mode evil-org term-toggle elixir-mode flycheck-elixir doom-themes doom-modeline typescript-mode rainbow-identifiers typoscript-mode rjsx-mode flycheck tide vue-mode go-autocomplete auto-complete go-imports zygospore vterm-toggle git-gutter-fringe haml-mode helm-exwm company-box company dap-mode eterm-256color lsp-mode evil-tutor git-gutter-fringe+ evil-magit magit org-edna highlight-indent-guides counsel-projectile projectile which-key rainbow-delimiters all-the-icons centaur-tabs go-mode powerline use-package doom ivy prettier-js web-mode neotree))
+   '(yasnippet smartparens idle-highlight-mode swiper json-mode evil-org term-toggle elixir-mode flycheck-elixir doom-themes doom-modeline typescript-mode rainbow-identifiers typoscript-mode rjsx-mode flycheck tide vue-mode go-autocomplete auto-complete go-imports zygospore vterm-toggle git-gutter-fringe haml-mode helm-exwm company-box company dap-mode eterm-256color lsp-mode evil-tutor git-gutter-fringe+ evil-magit magit org-edna highlight-indent-guides counsel-projectile projectile which-key rainbow-delimiters all-the-icons centaur-tabs go-mode powerline use-package doom ivy prettier-js web-mode neotree))
  '(truncate-lines t))
 
 (require 'haml-mode)
@@ -215,6 +215,34 @@
 
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (autoload 'js2-mode "Major mode for typescript files" t)
+
+(use-package clojure-mode
+  :ensure t
+  :mode (("\\.clj\\'" . clojure-mode)
+         ("\\.edn\\'" . clojure-mode))
+  :init
+  (add-hook 'clojure-mode-hook #'yas-minor-mode)
+  (add-hook 'clojure-mode-hook #'linum-mode)
+  (add-hook 'clojure-mode-hook #'subword-mode)
+  (add-hook 'clojure-mode-hook #'smartparens-mode)
+  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'clojure-mode-hook #'eldoc-mode)
+  (add-hook 'clojure-mode-hook #'idle-highlight-mode))
+
+(use-package cider
+  :ensure t
+  :defer t
+  :init (add-hook 'cider-mode-hook #'clj-refactor-mode)
+  :diminish subword-mode
+  :config
+  (setq nrepl-log-messages t                  
+        cider-repl-display-in-current-window t
+        cider-repl-use-clojure-font-lock t    
+        cider-prompt-save-file-on-load 'always-save
+        cider-font-lock-dynamically '(macro core function var)
+        nrepl-hide-special-buffers t            
+        cider-overlays-use-font-lock t)         
+  (cider-repl-toggle-pretty-printing))
 
 (use-package dap-mode
   :config
@@ -381,6 +409,7 @@
  "g s" 'magit-status
  "x s" 'save-buffer
  "x k" 'kill-buffer-and-window
+ "x f" 'find-file
  )
 
 (defun make-frame-or-other-frame ()
@@ -459,3 +488,4 @@ x-underline-at-descent-line t)
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
+
