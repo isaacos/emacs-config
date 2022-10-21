@@ -14,12 +14,11 @@
 
 (add-to-list 'default-frame-alist '(width  . 90))
 (add-to-list 'default-frame-alist '(height  . 30))
-(add-to-list 'default-frame-alist '(font . "Monospace-12"))
+(add-to-list 'default-frame-alist '(font . "Fira Code-12"))
 
 (global-tab-line-mode t)
-(setq tab-line-new-button-show nil) 
 (setq tab-line-tab-min-width 20)
-(setq tab-line-close-button "  ")
+(setq tab-line-close-button nil)
 
 (recentf-mode 1)
 
@@ -113,7 +112,7 @@
  '(highlight-indent-guides-method 'character)
  '(org-agenda-files '("~/.emacs.d/agenda/tasks.org"))
  '(package-selected-packages
-   '(slime hide-mode-line doom-modeline lispyville lispy dap-mode lsp-mode rjsx-mode company-box company vertico yasnippet idle-highlight-mode json-mode evil-org term-toggle flycheck-elixir rainbow-identifiers typoscript-mode vue-mode go-imports zygospore haml-mode helm-exwm evil-tutor git-gutter-fringe+ evil-magit org-edna highlight-indent-guides counsel-projectile doom prettier-js neotree))
+   '(popper slime hide-mode-line lispyville lispy rjsx-mode company-box yasnippet idle-highlight-mode json-mode term-toggle flycheck-elixir rainbow-identifiers typoscript-mode vue-mode go-imports zygospore haml-mode helm-exwm evil-tutor git-gutter-fringe+ evil-magit org-edna highlight-indent-guides counsel-projectile doom prettier-js neotree))
  '(truncate-lines t))
 
 (require 'haml-mode)
@@ -131,25 +130,6 @@
 ;;  `(font-lock-comment-face ((t (:foreground ,(doom-color 'base6))))))
    )
 
-
-;;(use-package ivy
-;;  :diminish
-;;  :bind(("C-s" . swiper)
-;;	:map ivy-minibuffer-map
-;;	("TAB" . ivy-alt-done)
-;;	("C-l" . ivy-alt-done)
-;;	("C-j" . ivy-next-line)
-;;	("C-k" . ivy-previous-line)
-;;	:map ivy-switch-buffer-map
-;;	("C-k" . ivy-previous-line)
-;;	("C-l" . ivy-done)
-;;	("C-d" . ivy-switch-buffer-kill)
-;;	:map ivy-reverse-i-search-map
-;;	("C-k" . ivy-previous-line)
-;;	("C-d" . ivy-reverse-i-search-kill))
-;;  :init
-;;(ivy-mode 1))
-;;kill-word
 (defun dw/minibuffer-backward-kill (arg)
   "When minibuffer is completing a file name delete up to parent
 folder, otherwise delete a word"
@@ -177,6 +157,12 @@ folder, otherwise delete a word"
   (vertico-cycle t)
   :init
 (vertico-mode))
+
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (defun dw/get-project-root ()
   (when (fboundp 'projectile-project-root)
@@ -270,14 +256,15 @@ folder, otherwise delete a word"
    :ensure t
    :diminish lsp-mode
    :hook
-   ((elixir-mode js2-mode) . lsp)
+   ((elixir-mode js-mode) . lsp)
    :init
    (add-to-list 'exec-path "/home/isaac/.emacs.d/lang-servers/elixir-ls-1.12"))
 
-(add-hook 'js2-mode-hook #'lsp)
+(add-hook 'js-mode-hook #'lsp)
 
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-mode))
+(add-hook 'js-mode-hook 'js2-minor-mode)
 
 (use-package clojure-mode
   :ensure t
@@ -336,7 +323,7 @@ folder, otherwise delete a word"
 (use-package emacs
   :init
   ;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
+  ;; (setq completion-cycle-threshold 3)
 
   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
   ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
@@ -509,6 +496,24 @@ folder, otherwise delete a word"
             (define-key evil-normal-state-local-map (kbd "p") 'neotree-previous-line)
             (define-key evil-normal-state-local-map (kbd "A") 'neotree-stretch-toggle)
             (define-key evil-normal-state-local-map (kbd "H") 'neotree-hidden-file-toggle)))
+
+(use-package popper
+  :ensure t ; or :straight t
+  :bind (("C-`"   . popper-toggle-latest)
+         ("M-`"   . popper-cycle)
+         ("C-M-`" . popper-toggle-type))
+  :init
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "\\*Warnings\\*"
+          "\\*Async Shell Command\\*"
+          help-mode
+          compilation-mode))
+  (popper-mode +1)
+  ;; (setq popper-mode-line (custom-set-faces))
+  (popper-echo-mode +1)) 
+
+
  
 (global-undo-tree-mode)
 (evil-set-undo-system 'undo-tree)
@@ -568,3 +573,7 @@ folder, otherwise delete a word"
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
+
+(setq tab-line-new-button-show nil) 
+(setq tab-line-left-button nil)
+(setq tab-line-right-button nil)
