@@ -95,7 +95,7 @@
  '(highlight-indent-guides-method 'character)
  '(org-agenda-files '("~/.emacs.d/agenda/tasks.org"))
  '(package-selected-packages
-   '(cape corfu consult-notes pandoc-mode denote marginalia languagetool writegood-mode sly-quicklisp org-pdftools popper hide-mode-line lispyville rjsx-mode yasnippet json-mode term-toggle flycheck-elixir rainbow-identifiers typoscript-mode vue-mode go-imports zygospore haml-mode helm-exwm evil-magit org-edna highlight-indent-guides counsel-projectile doom prettier-js neotree))
+   '(meow cape corfu consult-notes pandoc-mode denote marginalia languagetool writegood-mode sly-quicklisp org-pdftools popper hide-mode-line lispyville rjsx-mode yasnippet json-mode term-toggle flycheck-elixir rainbow-identifiers typoscript-mode vue-mode go-imports zygospore haml-mode helm-exwm evil-magit org-edna highlight-indent-guides counsel-projectile doom prettier-js neotree))
  '(truncate-lines t)
  '(warning-suppress-types '(((flycheck syntax-checker)))))
 
@@ -340,7 +340,7 @@ folder, otherwise delete a word"
   :ensure t
   :diminish lsp-mode
   :hook
-  ((elixir-mode js-mode) . lsp)
+  ((elixir-mode js-mode clojure-mode) . lsp)
   :init
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
@@ -460,7 +460,7 @@ folder, otherwise delete a word"
    (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
    (corfu-auto t)                 ;; Enable auto completion
    (corfu-auto-delay 0)
-   (corfu-auto-prefix 0)
+   (corfu-auto-prefix 1)
    (corfu-separator ?\s)          ;; Orderless field separator
   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
   ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
